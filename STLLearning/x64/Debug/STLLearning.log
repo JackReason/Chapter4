@@ -1,0 +1,4 @@
+﻿  STLLearning.cpp
+  Table.cpp
+  Generating Code...
+C:\Users\Green\Desktop\Learning\C++\Module4\STLLearning\STLLearning\Table.cpp(3,40): error C2438: 'TableSize': cannot initialize static class data via constructor
