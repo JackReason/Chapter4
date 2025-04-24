@@ -6,6 +6,7 @@
 #include <map>
 #include <algorithm>
 #include <set>
+#include <vector>
 
 
 
@@ -29,7 +30,14 @@ public:
 		this->Intelligence = level;
 	}
 
-	
+	Character(const Character& copy)
+	{
+		this->Name = copy.Name;
+		this->Cool = copy.Cool;
+		this->Intelligence = copy.Intelligence;
+	}
+
+
 	int GetCool() const
 	{
 		return Cool;
@@ -60,60 +68,78 @@ private :
 
 };
 
-bool LookForSmart(const std::pair<const std::string, Character>& chr)
+
+
+
+
+void Print(const std::pair<std::string, Character>& chr)
 {
-	Character PoopyButtHole("PoppyButtHole", 500, BrainLevel::AVERAGE);
-
-	return chr.second.GetBrainLEvel() > PoopyButtHole.GetBrainLEvel();
-
+	std::cout << chr.first << '\n';
 }
 
 
-void LookForTheBest(const std::string& chr) 
+class Fighter
 {
-	if (chr == "Rick")
-		std::cout << chr << " is the best!\n";
-
-	else
-		std::cout << chr << " is your average character\n";
+	using Str = std::string;
+public:
+	Fighter(Str name, Str First, Str Second, Str Third, Str Fourth) : Name(name)
+	{
+		this->PowerLevels = new Str[4];
+		PowerLevels[0] = First;
+		PowerLevels[1] = Second;
+		PowerLevels[2] = Third;
+		PowerLevels[3] = Fourth;
+	}
+		
+	Fighter(const Fighter& copy)
+	{
+		Name = copy.Name;
+		std::cout << "copy constunctor called for " << Name <<'\n';
+		this->PowerLevels = new Str[4];
+		for (int i = 0; i < 4; i++)
+		{
+			this->PowerLevels[i] = copy.PowerLevels[i];
+		}
+	
+		 
+	}
 
 	
-}
+	Fighter& operator=(const Fighter& copy) 
+	{
+		delete[] this->PowerLevels;
+		Name = copy.Name;
+		std::cout << "copy constunctor called for " << Name << '\n';
+		this->PowerLevels = new Str[4];
+		for (int i = 0; i < 4; i++)
+		{
+			this->PowerLevels[i] = copy.PowerLevels[i];
+		}
+		
+		return *this;
+	}
+
+	Str PrintName()
+	{
+		return Name;
+	}
+private:
+	Str Name;
+	std::string* PowerLevels;
+};
 
 int main()
 {
 
-	// find_if algorithm
 
-	std::map<std::string, Character> SeriesM;
+	// copy algorithm for unordered_map 
 
-	
-	SeriesM.emplace("Morty", Character("Morty", 120, BrainLevel::FOOL));
-	SeriesM.emplace("Summer", Character("Summer", 320, BrainLevel::SMART));
-	SeriesM.emplace("Rick", Character("Rick", 1000, BrainLevel::BRAINIAC));
-	SeriesM.emplace("Beth", Character ("Beth", 680, BrainLevel::SMART));
-
-	Character PoopyButtHole("PoppyButtHole", 500, BrainLevel::AVERAGE);
-	
-	
-
-	auto Result = find_if(SeriesM.begin(), SeriesM.end(), [PoopyButtHole]( const std::pair<const std::string, Character>& chr)
-		{
-			Character temp = chr.second;
-			return temp > PoopyButtHole;
-		});
-
-	
-	if (Result != SeriesM.end())
-	{
-		std::cout << Result->second.GetName() << " is cooler than mr. PoppyButtHole\n\n";
-	}
-
-	
-
-	// count_if algorithm
+	std::cout << " Copy unordered_map\n";
 
 	std::unordered_map<std::string, Character> SeriesU;
+
+	std::unordered_map<std::string, Character> SeriesCoolCharacters;
+
 
 	SeriesU.emplace("Morty", Character("Morty", 120, BrainLevel::FOOL));
 	SeriesU.emplace("Summer", Character("Summer", 320, BrainLevel::SMART));
@@ -123,24 +149,51 @@ int main()
 	SeriesU.emplace("BirdPerson", Character("BirdPerson", 830, BrainLevel::SMART));
 	SeriesU.emplace("GearHead", Character("GearHead", 70, BrainLevel::AVERAGE));
 
+	Character PoopyButtHole("PoppyButtHole", 500, BrainLevel::AVERAGE); 
 
-	auto SmartPeople = count_if(SeriesU.begin(), SeriesU.end(), LookForSmart);
+	copy_if(SeriesU.begin(), SeriesU.end(), std::inserter(SeriesCoolCharacters, SeriesCoolCharacters.begin()), [PoopyButtHole](const std::pair<std::string, Character>& chr) {
+		
+		return chr.second.GetCool() > PoopyButtHole.GetCool() ;
+		});
 
-	std::cout << SmartPeople << " characters are smarter then mr. PoopyButtHole\n\n";
+	std::cout << "These are cool characters : \n";
 
-	// for_each algorithm
+	std::unordered_map<std::string, Character>::const_iterator It;
+	It = SeriesCoolCharacters.begin();
+	for_each(SeriesCoolCharacters.begin(), SeriesCoolCharacters.end(), Print);
+	
+	
+	// deep copy
 
-	std::set<std::string> SeriesS;
+	std::cout << "\n Deep Copy \n ";
 
-	SeriesS.emplace("Morty");
-	SeriesS.emplace("Summer");
-	SeriesS.emplace("Rick");
-	SeriesS.emplace("Beth");
-	SeriesS.emplace("EvilMorty");
-	SeriesS.emplace("BirdPerson");
-	SeriesS.emplace("GearHead");
+	std::vector<Fighter> DB =
+	{
+		Fighter("Goku", "SSJ1","SSJ2", "SSJ3", "SSBlue"),
+		Fighter("Vegeta", "SSJ1","SSJ2", "SSJ3", "SSBlue")
+	};
+
+	std::vector<Fighter> DBdouble;
 	
 
-	for_each(SeriesS.begin(), SeriesS.end(), LookForTheBest);
+	copy(DB.cbegin(), DB.cend(), back_inserter(DBdouble));
+	std::cout << "\nAfter coping we have two doubles\n";
+	std::cout << DBdouble[0].PrintName() << '\n';
+	std::cout << DBdouble[1].PrintName() << '\n';
 
+	// fill algorithm
+
+	Fighter Krillin("Krillin", "Kame", "Kame1", "Kame2", "Kame3");
+	fill(DBdouble.begin(), DBdouble.end(), Krillin);
+
+
+	std::cout << "\n\nChanging list with Krillins\n";
+	std::cout << "Now we have : \n";
+	std::cout << DBdouble[0].PrintName() << '\n';
+	std::cout << DBdouble[1].PrintName() << '\n';
+
+
+	
+	
+	
 }
