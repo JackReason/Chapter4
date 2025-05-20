@@ -1,4 +1,5 @@
 ﻿  STLLearning.cpp
 C:\Users\Green\Desktop\Learning\C++\Module4\STLLearning\STLLearning\STLLearning.cpp(12,12): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\Green\Desktop\Learning\C++\Module4\STLLearning\STLLearning\STLLearning.cpp(89,26): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\Green\Desktop\Learning\C++\Module4\STLLearning\STLLearning\STLLearning.cpp(99,7): warning C4305: '=': truncation from 'double' to 'float'
+C:\Users\Green\Desktop\Learning\C++\Module4\STLLearning\STLLearning\STLLearning.cpp(166,11): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
   STLLearning.vcxproj -> C:\Users\Green\Desktop\Learning\C++\Module4\STLLearning\x64\Debug\STLLearning.exe
